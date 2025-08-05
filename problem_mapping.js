@@ -1072,7 +1072,7 @@ problem_mapping = {
         },
         "9.06 Find a root to leaf path with specified sum": {
             "C++: path_sum.cc": {
-                "passed": 0,
+                "passed": 7690,
                 "total": 7690
             },
             "Java: PathSum.java": {
