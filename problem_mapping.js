@@ -1086,7 +1086,7 @@ problem_mapping = {
         },
         "9.07 Implement an inorder traversal without recursion": {
             "C++: tree_inorder.cc": {
-                "passed": 0,
+                "passed": 3852,
                 "total": 3852
             },
             "Java: TreeInorder.java": {
