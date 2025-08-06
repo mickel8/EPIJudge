@@ -1170,7 +1170,7 @@ problem_mapping = {
         },
         "9.13 Compute the leaves of a binary tree": {
             "C++: tree_connect_leaves.cc": {
-                "passed": 0,
+                "passed": 3852,
                 "total": 3852
             },
             "Java: TreeConnectLeaves.java": {
