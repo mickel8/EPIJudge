@@ -1184,7 +1184,7 @@ problem_mapping = {
         },
         "9.14 Compute the exterior of a binary tree": {
             "C++: tree_exterior.cc": {
-                "passed": 0,
+                "passed": 3852,
                 "total": 3852
             },
             "Java: TreeExterior.java": {
