@@ -1,3 +1,6 @@
+#include <cstddef>
+#include <memory>
+#include <stack>
 #include <string>
 #include <vector>
 
@@ -7,17 +10,36 @@
 using std::string;
 using std::vector;
 
-unique_ptr<BinaryTreeNode<int>> ReconstructPreorder(
-    const vector<int*>& preorder) {
+unique_ptr<BinaryTreeNode<int>>
+ReconstructPreorder(const vector<int *> &preorder) {
   // TODO - you fill in here.
-  return nullptr;
+
+  std::stack<unique_ptr<BinaryTreeNode<int>>> stack;
+
+  for (int i = preorder.size() - 1; i >= 0; --i) {
+    int *node_data = preorder[i];
+    if (node_data != nullptr) {
+      unique_ptr<BinaryTreeNode<int>> left = std::move(stack.top());
+      stack.pop();
+      unique_ptr<BinaryTreeNode<int>> right = std::move(stack.top());
+      stack.pop();
+
+      stack.emplace(std::make_unique<BinaryTreeNode<int>>(
+          *node_data, std::move(left), std::move(right)));
+    } else {
+      stack.emplace(nullptr);
+    }
+  }
+
+  return std::move(stack.top());
 }
-unique_ptr<BinaryTreeNode<int>> ReconstructPreorderWrapper(
-    TimedExecutor& executor, const vector<string>& preorder) {
+unique_ptr<BinaryTreeNode<int>>
+ReconstructPreorderWrapper(TimedExecutor &executor,
+                           const vector<string> &preorder) {
   vector<int> values;
-  vector<int*> ptrs;
+  vector<int *> ptrs;
   values.reserve(preorder.size());
-  for (auto& s : preorder) {
+  for (auto &s : preorder) {
     if (s == "null") {
       ptrs.push_back(nullptr);
     } else {
@@ -30,7 +52,7 @@ unique_ptr<BinaryTreeNode<int>> ReconstructPreorderWrapper(
   return executor.Run([&] { return ReconstructPreorder(ptrs); });
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   std::vector<std::string> args{argv + 1, argv + argc};
   std::vector<std::string> param_names{"executor", "preorder"};
   return GenericTestMain(args, "tree_from_preorder_with_null.cc",

@@ -1156,7 +1156,7 @@ problem_mapping = {
         },
         "9.12 Reconstruct a binary tree from a preorder traversal with markers": {
             "C++: tree_from_preorder_with_null.cc": {
-                "passed": 0,
+                "passed": 3852,
                 "total": 3852
             },
             "Java: TreeFromPreorderWithNull.java": {
