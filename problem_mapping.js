@@ -1142,7 +1142,7 @@ problem_mapping = {
         },
         "9.11 Reconstruct a binary tree from traversal data": {
             "C++: tree_from_preorder_inorder.cc": {
-                "passed": 0,
+                "passed": 3852,
                 "total": 3852
             },
             "Java: TreeFromPreorderInorder.java": {
