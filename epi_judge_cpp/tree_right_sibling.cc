@@ -6,27 +6,48 @@
 #include "test_framework/timed_executor.h"
 using std::unique_ptr;
 using test_framework::BinaryTreeSerializationTrait;
-template <typename T>
-struct BinaryTreeNode {
+template <typename T> struct BinaryTreeNode {
   T data;
   unique_ptr<BinaryTreeNode<T>> left, right;
-  BinaryTreeNode<T>* next = nullptr;  // Populates this field.
+  BinaryTreeNode<T> *next = nullptr; // Populates this field.
 
-  explicit BinaryTreeNode(T data) : data(data){};
+  explicit BinaryTreeNode(T data) : data(data) {};
 };
 
-void ConstructRightSibling(BinaryTreeNode<int>* tree) {
+void SetSibling(BinaryTreeNode<int> *tree, BinaryTreeNode<int> *sibling) {
+
+  if (tree == nullptr) {
+    return;
+  }
+
+  tree->next = sibling;
+
+  SetSibling(tree->left.get(), tree->right.get());
+  SetSibling(tree->right.get(),
+             sibling == nullptr ? nullptr : sibling->left.get());
+}
+
+void ConstructRightSibling(BinaryTreeNode<int> *tree) {
   // TODO - you fill in here.
+
+  if (tree == nullptr) {
+    return;
+  }
+
+  SetSibling(tree->left.get(), tree->right.get());
+  SetSibling(tree->right.get(), nullptr);
+
   return;
 }
 namespace test_framework {
 template <>
 struct SerializationTrait<unique_ptr<BinaryTreeNode<int>>>
     : BinaryTreeSerializationTrait<unique_ptr<BinaryTreeNode<int>>, false> {};
-}  // namespace test_framework
+} // namespace test_framework
 
-std::vector<std::vector<int>> ConstructRightSiblingWrapper(
-    TimedExecutor& executor, unique_ptr<BinaryTreeNode<int>>& tree) {
+std::vector<std::vector<int>>
+ConstructRightSiblingWrapper(TimedExecutor &executor,
+                             unique_ptr<BinaryTreeNode<int>> &tree) {
   executor.Run([&] { ConstructRightSibling(tree.get()); });
 
   std::vector<std::vector<int>> result;
@@ -43,7 +64,7 @@ std::vector<std::vector<int>> ConstructRightSiblingWrapper(
   return result;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   std::vector<std::string> args{argv + 1, argv + argc};
   std::vector<std::string> param_names{"executor", "tree"};
   return GenericTestMain(

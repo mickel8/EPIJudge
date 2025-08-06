@@ -1198,7 +1198,7 @@ problem_mapping = {
         },
         "9.15 Compute the right sibling tree": {
             "C++: tree_right_sibling.cc": {
-                "passed": 0,
+                "passed": 10,
                 "total": 10
             },
             "Java: TreeRightSibling.java": {
