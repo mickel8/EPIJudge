@@ -7,6 +7,7 @@
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::vector;
+using std::unordered_set;
 enum class Color { kWhite, kBlack };
 struct Coordinate {
   bool operator==(const Coordinate& that) const {
@@ -15,10 +16,52 @@ struct Coordinate {
 
   int x, y;
 };
+
+
+bool DFS(vector<vector<Color>> &maze, const Coordinate &s, const Coordinate &e, vector<Coordinate> &path) {
+  // current vertex is out of bound
+  if (s.x < 0 || s.y < 0 || s.x >= maze.size() || s.y >= maze[s.x].size()) {
+    return false;
+  }
+
+  if (maze[s.x][s.y] == Color::kBlack) {
+    return false;
+  }
+
+  maze[s.x][s.y] = Color::kBlack;
+
+  if (s == e) {
+    return true;
+  }
+
+  int dirX[] = {0, 0, 1, -1};
+  int dirY[] = {1, -1, 0, 0};
+
+  for (int i = 0; i < 4; ++i) {
+    auto next = Coordinate{s.x + dirX[i], s.y + dirY[i]};
+    path.push_back(next);
+    if (DFS(maze, next, e, path)) {
+      return true;
+    } else {
+      path.pop_back();
+    }
+  }
+
+  return false;
+}
+
 vector<Coordinate> SearchMaze(vector<vector<Color>> maze, const Coordinate& s,
                               const Coordinate& e) {
   // TODO - you fill in here.
-  return {};
+  vector<Coordinate> path;
+
+  path.push_back(s);
+
+  if (!DFS(maze, s, e, path)) {
+    path.pop_back();
+  }
+
+  return path;
 }
 
 namespace test_framework {
