@@ -5,9 +5,32 @@
 #include "test_framework/timed_executor.h"
 using std::deque;
 using std::vector;
-
+using std::queue;
+using std::pair;
 void FlipColor(int x, int y, vector<deque<bool>>* image_ptr) {
   // TODO - you fill in here.
+
+  queue<pair<int, int>> q;
+  q.emplace(x, y);
+
+  auto &image = *image_ptr;
+  bool color = image[x][y];
+
+  while (!q.empty()) {
+    auto p = q.front();
+    q.pop();
+
+    if (p.first >= 0 && p.first < image.size() && p.second >= 0 && p.second < image[p.first].size()) {
+      if (image[p.first][p.second] == color) {
+        image[p.first][p.second] = !color;
+        
+        for (pair<int, int> n : std::initializer_list<pair<int, int>>{{p.first, p.second-1}, {p.first, p.second+1}, {p.first-1, p.second}, {p.first+1, p.second}}){
+          q.push(n);
+        }
+      }
+    }
+  }
+
   return;
 }
 vector<vector<int>> FlipColorWrapper(TimedExecutor& executor, int x, int y,
