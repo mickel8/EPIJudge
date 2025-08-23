@@ -6,9 +6,67 @@
 #include "test_framework/timed_executor.h"
 using std::string;
 using std::vector;
+using std::unordered_set;
+using std::pair;
+using std::queue;
+
+
+struct PairHash {
+  std::size_t operator()(const pair<int, int> &p) const {
+    return p.first ^ p.second;
+  }
+};
+
+void BFS(int i, int j, vector<vector<char>> *board_ptr, unordered_set<pair<int, int>, PairHash> &visited) {
+  queue<pair<int, int>> q;
+
+  auto &board = *board_ptr;
+
+  if (board[i][j] == 'B') {
+    return;
+  }
+  
+  q.emplace(i, j);
+
+  while (!q.empty()) {
+    auto current = q.front();
+    q.pop();
+    visited.insert(current);
+    for (pair<int, int> p : std::initializer_list<pair<int, int>>{{current.first, current.second+1}, {current.first, current.second-1}, {current.first+1, current.second}, {current.first-1, current.second}}) {
+      if (p.first >= 0 && p.first < board.size() && p.second >= 0 && p.second < board[p.first].size()) {
+        if(board[p.first][p.second] == 'W' && !visited.count(p)) {
+          q.push(p);
+        } 
+      }
+    }
+  }
+}
 
 void FillSurroundedRegions(vector<vector<char>>* board_ptr) {
   // TODO - you fill in here.
+
+  unordered_set<pair<int, int>, PairHash> visited;
+  auto &board = *board_ptr;
+
+  for (int i = 0; i < board.size(); ++i) {
+    BFS(i, 0, board_ptr, visited);
+    BFS(i, board[i].size() - 1, board_ptr, visited);
+  }
+
+  for (int i = 0; i < board[0].size() - 1; ++i) {
+    BFS(0, i, board_ptr, visited);
+    BFS(board.size()-1, i, board_ptr, visited);
+  }
+
+
+  for (int i = 0; i < board.size(); ++i) {
+    for (int j = 0; j < board[i].size(); ++j) {
+      if (!visited.count({i, j})) {
+        board[i][j] = 'B';
+      } 
+    }
+  }
+
   return;
 }
 vector<vector<string>> FillSurroundedRegionsWrapper(
