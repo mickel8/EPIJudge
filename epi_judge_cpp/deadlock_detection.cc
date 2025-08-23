@@ -7,12 +7,41 @@
 using std::vector;
 
 struct GraphVertex {
+  enum Color { kWhite, kGray, kBlack } color = kWhite;
   vector<GraphVertex*> edges;
 };
 
+bool DFS(GraphVertex *v) {
+  if (v->color == GraphVertex::Color::kGray) {
+    return true;
+  }
+
+  if (v->color == GraphVertex::Color::kBlack) {
+    return false;
+  }
+  
+  v->color = GraphVertex::Color::kGray;
+  for (auto n : v->edges) {
+    if (DFS(n)) {
+      return true;
+    }
+  }
+  v->color = GraphVertex::Color::kBlack;
+  return false;
+}
+
 bool IsDeadlocked(vector<GraphVertex>* graph) {
   // TODO - you fill in here.
-  return true;
+
+  for (auto v : *graph) {
+    if (v.color == GraphVertex::Color::kWhite) {
+      if (DFS(&v)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 struct Edge {
   int from;
